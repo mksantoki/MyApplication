@@ -1,0 +1,81 @@
+apply plugin: 'com.android.application'
+apply plugin: 'io.objectbox' // after applying Android plugin
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
+    defaultConfig {
+        applicationId "com.mk.androidtest"
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "int", "LIMIT", "100"
+        buildConfigField "String", "BASEURL", "\"http://api.giphy.com/v1/gifs/\""
+        buildConfigField "int", "CACHETIME", "432000" // 5days
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+}
+
+def supportVersion = "26.+";
+def leakCanaryVersion = '1.5';
+
+dependencies {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    compile "com.android.support:appcompat-v7:$supportVersion"
+    compile "com.android.support:design:$supportVersion"
+
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+
+    /*is use to inject UI => XML TO JAVA*/
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    /*is use to conductore start*/
+    compile 'com.bluelinelabs:conductor:2.1.5-SNAPSHOT'
+
+    /*A memory leak detection library for Android and Java.*/
+    compile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    compile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+
+    /*use to load photos*/
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    /*use to call sever and get data*/
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+
+    /*use to dependency injection framework for both Java and Android*/
+    compile 'com.google.dagger:dagger:2.11'
+    compile 'com.google.dagger:dagger-android:2.11'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+
+    // Playlist support
+    compile project(':library')
+    compile 'com.devbrackets.android:playlistcore:1.1.1'
+    compile 'com.google.android.exoplayer:extension-okhttp:r2.5.2'
+}
+
+
